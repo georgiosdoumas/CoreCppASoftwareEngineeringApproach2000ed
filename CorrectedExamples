@@ -1,0 +1,37 @@
+//Example 3.1 has to be like this : 
+#include <limits>
+#include <iostream>
+using namespace std;
+int main(void)
+{
+	int num = __INT_MAX__ - 2;
+	int cnt = 0;
+	cout << "Integer overflow in C++:" << endl;  // the book texts has forgotten the 2nd << 
+	cout << "Incrementing from " << num << endl;
+	while (cnt < 5)
+	{ num = num + 1;
+	  cnt = cnt + 1;
+	  cout << cnt << "   " << num << endl; }
+	cout << "Thank you for worrying about integer limits" << endl;
+	return 0;
+}
+
+//Another way to implement it is :
+#include <climits>
+#include <iostream>
+using namespace std;
+int main(void)
+{
+	int num = INT_MAX - 2;
+	int cnt = 0;
+	cout << "Integer overflow in C++:" << endl;  // the book texts has forgotten the 2nd << 
+	cout << "Incrementing from " << num << endl;
+	while (cnt < 5)
+	{ num = num + 1;
+	  cnt = cnt + 1;
+	  cout << cnt << "   " << num << endl; }
+	cout << "Thank you for worrying about integer limits" << endl;
+	return 0;
+}
+//A usefull command is 
+// grep -r INT_MAX /usr/include/* | grep limits
