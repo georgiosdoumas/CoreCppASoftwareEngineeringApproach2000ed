@@ -35,3 +35,28 @@ int main(void)
 }
 //A usefull command is 
 // grep -r INT_MAX /usr/include/* | grep limits
+
+
+//Example 5.3 should be like this, for my g++ compiler to accept it.
+#include <iostream>
+using namespace std;  //this line was ommited in the book
+int main(void)        //the book has it as void main() , but g++ 4.4.7 only accepts int main
+{
+	int  a[3];int size[5];  //there is no difference if it is written as: int a[3],size[5];  
+	a[1]=11; a[2]=12; a[3]=13;  //it should be a[0]...a[2] 
+	size[1]=39;size[2]=40;size[3]=41;size[4]=42;size[5]=43; //should be size[0]...size[4]
+	for(int i=1;i<=5;i++) cout<<" "<<size[i];
+	cout << endl;
+	for(i=0;i<3;i++) cout<<" "<<a[i];
+	cout<<endl;
+	return 0;
+}
+//And by running 
+//g++ -Wall -fpermissive  -o Chap5example5.3  Chap5example5.3.cpp
+//the definition of int i inside the for loop is accepted , and an executable is produced.
+//However I do not get the results that the book wants to show , I get 
+39 40 41 42 43
+ 0 11 12
+//which means that a[0] has assumed a 0 value , as expected , and it has not been overwritten 
+//by the overflow of element size[5] . The author obviously wants to show that the bad element size[5]
+//falls on the position of element a[0], but in reality it does not happen.
