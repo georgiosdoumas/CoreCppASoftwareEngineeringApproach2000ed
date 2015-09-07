@@ -73,3 +73,39 @@ int main(void)
 //with output 
  39 40 41 42 59 60 61 
  62 12 13
+
+
+//Example 5.16 ,an improvement from the book code , using a function
+#include <iostream>
+#include <cstring>
+using namespace std;
+union StreetOrPOB	// alternative interpretations
+{ char street[30];
+  long int POB;   } ;
+struct Address
+{ char fullname[30];
+  int kind;			// 0: street address; 1: P.O.B.
+  StreetOrPOB second;  // either one or the another meaning
+  char city[30];   } ;
+void display(Address someadr)  //display function,not used in the book
+{
+	cout << someadr.fullname << endl;
+	if (someadr.kind == 0)		// check data interpretation
+		cout << someadr.second.street << endl;
+	 else
+		cout << "P.O.B. " << someadr.second.POB << endl;
+	cout << someadr.city << endl;   cout << endl;
+}
+int main ()
+{
+	Address a1, a2;
+	strcpy(a1.fullname,"Doe, John");
+	strcpy(a1.second.street,"15 Oak Street"); a1.kind = 0;
+	strcpy(a1.city,"Anytown, MA 02445");
+	strcpy(a2.fullname,"King, Amy");
+	a2.second.POB = 761; a2.kind = 1;		// address with POB
+	strcpy(a2.city,"Anytown, MA 02445");
+	display(a1);  //here the book has all the lines of code to display...
+	display(a2);  //... and repeats them again , so I thought I could make a function!
+	return 0;
+}
