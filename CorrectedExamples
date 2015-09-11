@@ -119,7 +119,7 @@ int main()
 	pi = &i;				// this turns pointer to i
 	*pi = 502;				// this is ok, it effects in i = 502;
 	if (*pi>0)   *pi = 28791;	//just a show off,same as: if(i>0) i=28791 [book has it : if(*pi>0) *pc=28791]
-	pc = (char*) &i;			// some compilers don't need it
+	pc = (char*) &i;			// some compilers will accept : pc = &i;
 	int a1 = *pi;			// access to i through pointer
 	int a2 = *pc;			// access to i through pointer
 	cout << " i as decimal: " << i << endl
