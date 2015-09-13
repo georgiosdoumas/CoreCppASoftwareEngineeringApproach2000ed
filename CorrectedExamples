@@ -220,3 +220,42 @@ int main(void)
 	delete [] data;
 	return 0;
 }
+
+
+
+//Example 6.12 , header files missing, and a wrong ' at line:
+// cout <<"Allocated " << len+1 <<": " << data << endl;
+//which in the book is typed as 
+// cout <'<"Allocated " << len+1 <<": " << data << endl;
+#include <iostream>
+#include <cstring>  //missing from the book
+//#include <cstdio>   //also missing from book , EOF is defined here as -1. Alternatively, define it:
+#define EOF -1
+using namespace std;
+int main(void)
+{
+	const int LEN = 8; char buf[LEN];
+	int cnt = 0;
+	cout << "Enter data (or press Return to end): \n";
+	do 
+		{			// start of outer loop for input lines
+			char *data = new char[1]; data[0] = 0;		// initially, it is empty
+			int len = 0;		// initial size is zero
+			do {			// start of inner loop for line segments
+				 cin.get(buf,LEN);		// get next line segment
+				 len += strlen(buf);		// expand total string length
+				 char *temp = new char[len+1];
+				 strcpy(temp,data); strcat(temp,buf);  //transfer letters
+				 delete data;
+				 data = temp;		// expand the long line
+				 cout <<"Allocated " << len+1 <<": " << data << endl;
+				 char ch = cin.peek();		// what is left in the buffer?
+				 if (ch == '\n' || ch == EOF)		// quit if if user gave just a new line
+				   { ch = cin.get();	break; }	// but first remove this '\n' from input
+				} while (true);
+			if (len == 0) break;		// end on empty string
+			cout << " line " << ++cnt << ": " << data << endl;
+			delete [ ] data;
+		} while (true);		// continue until break on empty line
+	return 0;
+}
