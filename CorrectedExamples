@@ -130,3 +130,54 @@ int main()
 	return 0;
 }
 
+//Example 6.10 , the book code was missing a brace }
+//and the program would not compile. I found it , added it , and also did 
+//all the improvements that were suggested in the next 2 pages of the book. It is 
+//a habit for the writer to present a low quality solution initially , and add improvements
+//in the next 2-3 pages of the original code , as he explains to the reader several stuff.
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main (void)
+{
+	const int NUM = 3;		// for exibition purposes (normally it should be larger)
+	double  total = 0, *data;
+	int count = 0, size = NUM;		// initialize current data
+	data = new double[size];		// initial un-named array on the heap,is only NUM elements big
+	do {				// do until zero is entered from user
+		double amount;	//for user input
+		cout << " Enter amount (or 0 to finish): ";
+		cin >> amount;		// get next double value by user
+		if (amount == 0) break;		// user wants to finish entering amounts
+		if (count == size)		// lack of space, ask for more START 
+		   { 
+			double *q = new double[2*size];		//new pointer,points to doubled array size
+			if (q == 0) 		      //for some reason new memory on the heap could not be allocated
+				{ cout <<" Out of heap memory: input was terminated" <<endl;break; }
+			else 						//new pointer q was succesfully created...
+			   {
+				cout << "More memory allocated: size = " << size  //...so inform the user about this
+					 << " at position " << q << endl;  //not in the book,put it for demonstration
+				for (int i=0; i < size; i++)		// copy old data, populate q
+				   q[i] = data[i];				// using subscript notation
+				size = size * 2;				//update value to reflect doubled size
+				delete [] data;			// do not forget to free old smaller array data
+				data = q; 		// bind array to the newly created (and populated) pointer
+			   }				
+		    }				// lack of space, ask for more END (missing from the book)
+		total += amount;		// process current valid data...
+		data[count++] = amount;	 // ...and get next input value
+		} while (true);
+	cout << "\n Total of " << count << " values is "	<< total << endl;
+	if (count == 0) return 0;		// no results if no input
+	cout << "\n Transaction no. Amount\n\n";		// print the table header
+	cout.setf(ios::fixed);		// set up fixed format for double
+	cout.precision(2);  		//or (if ios::fixed not present) total digits 
+	for (int i = 0; i < count; i++)		// go over the data again
+	  { 
+		cout << setw(4); cout << i+1;			// transaction number
+		cout << setw(11); cout << data[i] << endl; 	// transaction value
+	  }		
+	delete [] data; 		//free memory from the heap (do not rely on Operating System to do it)
+	return 0;
+}
