@@ -181,3 +181,42 @@ int main (void)
 	delete [] data; 		//free memory from the heap (do not rely on Operating System to do it)
 	return 0;
 }
+
+
+
+//Example 6.11 , one missing header for cstrings and one typo mistake 
+//the line: strcpy(temp,buf);
+//was writen as:  strcpy(temp,buf);}
+//It seems that the writer misses often braces , or puts extra braces!
+#include <iostream>
+#include <cstring>  //missing from the book
+using namespace std;
+int main(void)
+{
+	const int LEN = 8; int len=1;		// short array to demonstrate dynamic expansion
+	char buf[LEN], *data = 0;		// char-pointer initiallized to zero for first pass
+	cout << " Type text, press Enter: \n";
+	do 
+		{
+			cin.get(buf,LEN);	// user data goes into the stack array buf,in LEN-1 character chunks
+			len += strlen(buf);		// increase len to len-of-buf+len
+			char *temp = new char[len];	// request new un-named heap array,pointed-to by temp
+			if (temp == 0)			// heap memory allocation failed?
+			  { cout << " Out of memory: program terminated\n";return 0; }	// inform user, exit
+			if (data == 0)       //the value of pointer data has remained 0 for the 1st passing
+			   strcpy(temp,buf); 		// 1st copy of data from input buffer(will happen only once)
+			  else
+			   {strcpy(temp,data); strcat(temp,buf); }		//this happens all next times
+			delete [] data;						// delete existing array
+			data = temp;					// point data to the new array
+			cout << " Total: " << len << " , added: " << buf << endl;
+			cout << " Dynamic buffer: " << data << endl;			// debug
+			char ch = cin.peek();		// what is left in the buffer, after cin.get(buf,LEN); ?
+			if (ch == '\n')			//if it's new line(user wants to finish and pressed enter)... 
+			  { ch = cin.get(); break; }	//...we exit the do-while loop
+		} while (true);				// or keep going until EOF
+	cout << "\n You entered the following line: \n\n";
+	cout << data << endl;			// same syntax as for arrays
+	delete [] data;
+	return 0;
+}
