@@ -188,6 +188,12 @@ int main (void)
 //the line: strcpy(temp,buf);
 //was writen as:  strcpy(temp,buf);}
 //It seems that the writer misses often braces , or puts extra braces!
+//Also the if (ch == '\n')  { ch = cin.get(); break; }
+//is replaced with 
+//if (ch == '\n' || ch==-1)  { ch = cin.get(); break; }
+//to accomodate the fact that when user press just enter without typing anything first
+//(so it is an empty line, and user strikes ENTER key)
+//on some systems (my linux including) this is not an '\n' but an EOF =-1
 #include <iostream>
 #include <cstring>  //missing from the book
 using namespace std;
@@ -212,7 +218,7 @@ int main(void)
 			cout << " Total: " << len << " , added: " << buf << endl;
 			cout << " Dynamic buffer: " << data << endl;			// debug
 			char ch = cin.peek();		// what is left in the buffer, after cin.get(buf,LEN); ?
-			if (ch == '\n')			//if it's new line(user wants to finish and pressed enter)... 
+			if (ch == '\n' || ch==-1)	//if it's new line(user wants to finish and pressed enter)... 
 			  { ch = cin.get(); break; }	//...we exit the do-while loop
 		} while (true);				// or keep going until EOF
 	cout << "\n You entered the following line: \n\n";
@@ -239,7 +245,7 @@ int main(void)
 	cout << "Enter data (or press Return to end): \n";
 	do 
 		{			// start of outer loop for input lines
-			char *data = new char[1]; data[0] = 0;		// initially, it is empty
+			char *data = new char[1]; data[0] = '\0';   // initially, it is empty,data[0]=0; would also do
 			int len = 0;		// initial size is zero
 			do {			// start of inner loop for line segments
 				 cin.get(buf,LEN);		// get next line segment
