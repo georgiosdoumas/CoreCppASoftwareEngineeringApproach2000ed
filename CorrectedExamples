@@ -276,3 +276,54 @@ because the dot selector operator can be applied to a structure variable only (n
     ..... Hence, *q.item means *(q.item) and this is a syntax error
 because the dot selector operator can be applied to a structure variable only (named or unnamed), not to a pointer.
 
+
+
+//Example 6.13 , improved commants , and correction of an assumption of the book which is NOT correct
+#include <iostream>
+#include <iomanip>
+using namespace std;
+typedef double Item;  //So Item is a synonym for double
+struct Node { Item item; Node* next; } ;
+int main ()
+{ 
+	int count = 0;			// count of amounts
+	Node *data=NULL, *last;		// pointers to beggining and end of list
+	do {					// do until EOF causes failure
+		  double amount;			// local variable for input
+		  cout << " Enter amount (or 0 to finish): ";
+		  //if (amount == 0) break;  //the book has this line but it is not needed here
+		  cin >> amount;  	// get next double from user
+		  if (amount==0) break;	// stop input when user enters 0 as amount
+		  Node* q = new Node;		// create new pointer-to-node on the heap
+		  if (q == 0)		// test for success of pointer creation
+		    { cout << "Out of heap memory" << endl; break; }
+		  q->item = amount;		// fill node with program data,that user gave
+		  q->next = NULL;		// update what is considered as last element , now it is q. Then we must take care that last->next no longer is NULL
+		  (data == NULL ? data : last->next) = q; //if data was 0 then it is the first element  so data=q , else it is an arbitrary element so last->next = q
+		  last = q; //last = last->next;  would NOT be ok
+		//last = last->next;  is NOT equivalent (contrary to book assumption),segmentation fault happens and the assignment last->next = q; fails to execute
+		  count++; 		// increment count
+		} while (true);
+	cout << "\nTotal of " << count << " values are loaded\n";
+	if (count == 0) return 0;		// no output if no  user input. Program just exits.
+	cout << "\nNumber Amount Subtotal\n\n";		// print header
+	cout.setf(ios::fixed);		// fixed format for double
+	cout.precision(2);		// 2 digits after decimal point
+	double total = 0;		// initialize total for input amounts
+	Node *q = data;		// start at beggining of the list
+	for (int i = 0; i < count; i++)		// go over list data
+	{ 
+		total += q->item;		// accumulate total
+		cout.width(3); cout << i+1;	// transaction number
+		cout.width(10); cout << q->item;	// transaction value
+		cout.width(11); cout << total << endl;	// running total
+		q = q->next; 			// idiom to pointing pointer to next node
+	}
+	Node *p = data, *r = data;		// initialize traversing pointers
+	while (p != NULL)		// go on until it runs off the list
+	{ 
+		p = p->next;		// prevent next node from hanging
+		delete r; r = p; 	// delete node, catch up with next
+	}
+return 0;
+}
