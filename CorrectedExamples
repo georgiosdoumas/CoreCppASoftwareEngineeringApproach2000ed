@@ -265,3 +265,14 @@ int main(void)
 		} while (true);		// continue until break on empty line
 	return 0;
 }
+
+//A mistake in the text Chapter6 , paragraph : Dynamic Structures
+//The book text is like this :
+Some programmers dislike dealing with two selection operators, the arrow and the dot. It is all right to use the uniform
+notation, (*q).item for q->item and (*q).next for q->next. Parentheses here are necessary because the selection
+operator is of higher priority than the dereferencing operator. Hence, *q.item means *(q.next) and this is a syntax error
+because the dot selector operator can be applied to a structure variable only (named or unnamed), not to a pointer.
+//The last sentence should be corrected with 
+    ..... Hence, *q.item means *(q.item) and this is a syntax error
+because the dot selector operator can be applied to a structure variable only (named or unnamed), not to a pointer.
+
