@@ -327,3 +327,45 @@ int main ()
 	}
 return 0;
 }
+
+
+//Example 6.14 with small corrections , and the additions for checking operations on ofstream object
+//as they are proposed in the text of the book after the listing 6.14
+#include <iostream>
+#include <cstring>  //missing from the book
+#include <fstream>  //for ofstream object
+#include <cstdio>   //also missing from book , EOF is defined here as -1. Or define it: #define EOF -1
+using namespace std;
+int main(void)
+{
+	const int LEN = 8; char buf[LEN];
+	int cnt = 0;
+	ofstream outpfile("Chap6exampl6_14.out");
+	if (outpfile.fail())		// test for success, give up if not
+	  { cout << "Cannot open file" << endl; return 0; }
+	cout << "Enter data (or press Return to end): \n";
+	do 
+		{			// start of outer loop for input lines
+			char *data = new char[1]; data[0] = '\0';		// initially, it is empty
+			int len = 0;		// initial size is zero
+			do {			// start of inner loop for line segments
+				 cin.get(buf,LEN);		// get next line segment
+				 len += strlen(buf);		// expand total string length
+				 char *temp = new char[len+1];
+				 strcpy(temp,data); strcat(temp,buf);  //transfer letters from data to temp,append buffer after temp
+				 delete []data;
+				 data = temp;		// expand the long line
+				 int ch = cin.peek();		// what is left in the buffer?
+				 if (ch == '\n' || ch == EOF)		// quit if  user gave just a new line
+				   { ch = cin.get();	break; }	// but first remove this '\n' from input
+				} while (true);
+			if (len == 0) break;		// end on empty string
+			cout << " line " << ++cnt << ": " << data << endl;  //just to inform the user what is going on
+			outpfile << data << endl;
+			if (outpfile.fail())		// test for success of writing to output file
+			  { cout << "Disk is full, output terminated" << endl; break; }
+			delete [ ] data;
+		} while (true);		// continue until break on empty line
+	cout << "Data is saved in file Chap6exampl6_14.out" << endl;
+	return 0;
+}
