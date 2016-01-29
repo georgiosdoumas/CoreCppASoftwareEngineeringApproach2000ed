@@ -388,3 +388,42 @@ He forgot to edit and have the functions like this:
  double min(double x, double y)	// it is different from int
   { return x<y ? x : y; }
 
+
+//Example 8.7 , with small modifications 
+//Notice: basic protection against bad user input (for example if user enters letters instead of numbers)
+#include <iostream> 		// encapsulation with server functions
+using namespace std; 
+struct Cylinder { double radius, height; } ; 
+void enterData(Cylinder &c, const char *numbertext)  //book doesn't use the const keyword.I use it to avoid a warning of g++ Wall
+{ 
+	cout << "Enter radius and height of the " << numbertext << " cylinder: ";
+	cin >> c.radius >> c.height; 		// initialize cylinder
+}
+void validateCylinder(Cylinder c)
+{ 
+	if (c.radius < 0) c.radius = 10;		// defaults for corrupted data
+	if (c.height < 0) c.height = 20; 
+}
+double computeVolume(const Cylinder& c) 		
+ { return c.height * c.radius * c.radius * 3.141593; }
+void scaleCylinder(Cylinder &c, double factor)		// scale dimensions
+ { c.radius *= factor; c.height *= factor; }
+void printCylinder(const Cylinder &c)			// print object state
+ { cout << "radius: " <<c.radius << " height: " <<c.height <<endl; }
+int main()						// pushing responsibility to server functions
+{
+	Cylinder c1, c2;			// program data
+	enterData(c1,"first");		// initialize first cylinder, pass a name : first
+	validateCylinder(c1);		// default values for corrupted data
+	enterData(c2,"second");		// initialize second cylinder,name : second
+	validateCylinder(c2);		// defaults for corrupted data
+	if (computeVolume(c1) < computeVolume(c2)) // compare volumes
+	{ 
+		scaleCylinder(c1,1.2);		// scale it up and
+		cout << "\nFirst cylinder changed size\n";	// print size
+		printCylinder(c1); 
+	}
+	else					// otherwise do nothing
+    	cout << "No change in first cylinder size" << endl;
+	return 0;
+}
