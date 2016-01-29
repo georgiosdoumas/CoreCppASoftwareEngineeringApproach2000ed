@@ -427,3 +427,12 @@ int main()						// pushing responsibility to server functions
     	cout << "No change in first cylinder size" << endl;
 	return 0;
 }
+
+
+//Example 8.8 has an small mistake. To be consistent with what the writer tries to explain
+//instead of using the line (close to the end) 
+cout <<"radius: "<<c1.radius<<" height: "<<c1.height<<endl; 
+// he should use this 
+cout <<"radius: "<< getRadius(c1) <<" height: "<< getHeight(c1) <<endl; 
+//The program compiles of course , and runs normally, but the ideas the author is trying to express are 
+//better promoted by my corrected code.
