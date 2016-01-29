@@ -369,3 +369,22 @@ int main(void)
 	cout << "Data is saved in file Chap6exampl6_14.out" << endl;
 	return 0;
 }
+
+
+//Chapter 7 Function Name Overloading
+// After the NOTE , the writer has a discussion about functions that rreturn the maximum
+// and he continues with an example of functions that return the minimum of 2 numbers. So he goes :
+"Come to think of it, using two functions, maxLong() and maxDouble(), might not
+ be such a bad idea. Especially because this is not the end. Let us consider two other overloaded functions.
+ int min (int x, int y)		// return the minimum value
+   { return x>y ? x : y; }
+ double min(double x, double y)	// it is different from int
+  { return x>y ? x : y; }
+"
+But of course these functions do not return the minimum , it is just a copy-paste from the previous discussion.
+He forgot to edit and have the functions like this:
+ int min (int x, int y)		// return the minimum value
+   { return x<y ? x : y; }
+ double min(double x, double y)	// it is different from int
+  { return x<y ? x : y; }
+
