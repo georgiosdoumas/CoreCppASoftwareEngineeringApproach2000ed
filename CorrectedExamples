@@ -503,3 +503,56 @@ int main()
 	checkParenTest("a=(x(i]+5]*y;");
 	return 0;
 }
+
+
+
+// Here is a working implementation of the example9.2 , with multiple files
+// First the file with class definition, in which only the function member prototypes are declared
+// and will be defined(implemented) in seperate file
+//chap9example2.h file
+#ifndef CYLINDER_H
+#define CYLINDER_H
+#include <iostream>
+using namespace std;
+struct Cylinder 		
+{ 
+	double radius, height; 				// member data 
+	void setCylinder( double r, double h);	//4 member functions , only declarations here
+	double getVolume();
+	void scaleCylinder( double factor);
+	void printCylinder(); 
+} ;
+#endif
+
+//chap9example2functions.h file for function implementations 
+#include <iostream>
+#include "chap9example2.h"    //struct and function declarations there
+inline void Cylinder::setCylinder( double r, double h)	
+ { radius = r; height = h; }
+inline double Cylinder::getVolume()
+ { return height * radius * radius * 3.141593; }
+inline void Cylinder::scaleCylinder( double factor)
+ { radius *= factor; height *= factor; }
+inline void Cylinder::printCylinder() 
+ { cout << "radius: " << radius << " height: " << height <<endl; }
+
+//chap9example2.cpp file , for main()
+#include <iostream>
+#include "chap9example2functions.h"
+int main()  			
+{ 
+	Cylinder c1, c2;
+	c1.setCylinder(10,30); c2.setCylinder(20,30);
+	cout << "\nInitial size of first cylinder\n";
+	c1.printCylinder();
+	if (c1.getVolume() < c2.getVolume())  
+	  { 
+		c1.scaleCylinder(1.2);
+		cout << "\nFirst cylinder changed size\n";
+		c1.printCylinder(); 
+	  }
+	else  cout << "\nNo change in first cylinder size" << endl;
+	return 0;
+}
+// Build it as usual , while in the directory that contains the files :
+// g++ -Wall -o chap9example2 chap9example2.cpp
