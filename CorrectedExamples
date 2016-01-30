@@ -436,3 +436,70 @@ cout <<"radius: "<<c1.radius<<" height: "<<c1.height<<endl;
 cout <<"radius: "<< getRadius(c1) <<" height: "<< getHeight(c1) <<endl; 
 //The program compiles of course , and runs normally, but the ideas the author is trying to express are 
 //better promoted by my corrected code.
+
+
+//In examples 8.12 and 8.13 the author has forget the preprocessor directive 
+//#include <cstring>
+//which is no longer needed since he does not use the function strcpy in those 2 examles. He was 
+//using it in 8.10 and 8.11. Also he has omitted a pair of braces in the if statements of the
+//while loop , which is not wrong on itself , but it does not make the logic clear 
+// and the compiler gives me warning. Also he omitts the usage of const keyword
+// for passing the expression as a string in 2 of the functions.
+//Here is my polished version (I do not bother to upload 8.11 , only 8.12) 
+#include <iostream>			// Encapsulation with info hiding
+using namespace std;
+struct Store { 			//type definition , no global variable of this struct will be required
+	char a[81]; 		// array for temporary storage of opening (left) symbols
+	int idx; 			// index to first available slot
+} ; 
+void initStore (Store &s) 		// initialize the empty store
+ { s.idx = 0; } 
+bool isEmpty (const Store& s) 	      // check whether the store is empty
+ { return (s.idx == 0); } 
+void saveSymbol (Store &s, char x)     // save the opening symbol in the store
+ { s.a[s.idx++] = x; } 
+char getLast(Store &s)			// get back the last symbol saved
+ { return s.a[--s.idx]; } 
+bool isLeft (char c) 			// check if it is a left (opening) symbol
+ { return (c=='(' || c=='['); } 
+bool isRight (char c)			// check if it is a right (closing) symbol
+ { return (c==')' || c==']'); }
+bool symbolsMatch (char c, char sym)
+ { return (sym=='('&&c==')')||(sym=='['&&c==']');}
+bool checkParen (const char buffer[])
+{ 
+	Store store;				//local variable
+	char c,sym; int i=0; bool valid=true;
+	initStore(store); 
+	while (buffer[i] != '\0' && valid)
+	 { 
+		c = buffer[i];
+	 	if (isLeft(c)) { saveSymbol(store,c); }
+	 	else if (isRight(c))
+		 {
+	 		if (!isEmpty(store))
+	 		  { 
+				 sym = getLast(store);
+	 			 if (!symbolsMatch(c,sym)) valid = false; 
+			  }
+	 		else
+			  valid = false;
+		 }
+		i++; 
+	 }
+	if (store.idx>0) valid=false;
+	return valid; 
+}
+void checkParenTest(const char expression[])
+{ 
+	cout << "Expression " << expression << endl;		// print expression for the user to see it
+	if (checkParen(expression))	cout << "is valid\n";	// validate it,calling function checkParen(expr)								
+	else cout << "is not valid\n"; 
+}
+int main()
+{
+	checkParenTest("a=(x[i]+5)*y;");
+	checkParenTest("a=(x[i)+5]*y;");
+	checkParenTest("a=(x(i]+5]*y;");
+	return 0;
+}
