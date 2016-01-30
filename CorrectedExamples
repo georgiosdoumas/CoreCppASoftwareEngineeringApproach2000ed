@@ -456,7 +456,7 @@ void initStore (Store &s) 		// initialize the empty store
  { s.idx = 0; } 
 bool isEmpty (const Store& s) 	      // check whether the store is empty
  { return (s.idx == 0); } 
-void saveSymbol (Store &s, char x)     // save the opening symbol in the store
+void saveSymbol (Store &s, const char x)     // save the opening symbol in the store
  { s.a[s.idx++] = x; } 
 char getLast(Store &s)			// get back the last symbol saved
  { return s.a[--s.idx]; } 
