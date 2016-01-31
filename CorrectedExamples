@@ -598,3 +598,44 @@ int main()
 	Client();
 	return 0;
 }
+
+
+//Example 9.6
+//I expand the example by using the samePoints function that is mentioned in the text
+//after the actual example.I use the move function also. 
+#include <iostream>
+using namespace std;
+class Point {
+	int x, y;						// private coordinates
+	static int count ;	
+  public:
+	Point(int a=0, int b=0)		// general constructor
+	 { x = a; y = b; count++; cout << " Point created: x=" << x << " y=" << y << endl; }
+	static int quantity()						
+ 	 { return count; }
+	static bool samePoints(const Point &p1, const Point &p2)
+	 { return p1.x == p2.x && p1.y == p2.y; }
+	void set (int a, int b)			// modifier function, assings values to a point x and y coordinates
+	 { x = a; y = b; }
+	void get(int& a, int& b) const	// selector function
+	 { a = x; b = y; }
+	void move(int a, int b)		// modifier function, changes a points coordinates by a specified value
+	 { x += a; y += b; }
+	~Point()						// destructor
+	 { count--; cout << " Point destroyed: x=" << x << " y=" << y << endl; }
+} ;
+int Point::count = 0 ;			//Important to define and initialize it here, before main
+int main()
+{ 
+	cout << "Number of points: " << Point::quantity() << endl;
+	Point *p = new Point(80,90);			// dynamically allocated object
+	Point p1, p2(30), p3(50,70);    		// origin, x-axis, general point
+	cout << "Number of points: " << p3.quantity() << endl; //p1.quantity() would give same result : 4
+	if(Point::samePoints(p1,p3)==true) cout << "Same point p1 and p3\n";
+	 else cout << "Not same point p1 and p3\n";
+	p3.move(30,20);
+	if(Point::samePoints(*p,p3)==true) cout << "Same point *p and moved p3\n";
+	 else cout << "Not same point *p and moved p3\n";
+	delete p;			//this is not mentioned in example 9.5
+	return 0;		
+}		
