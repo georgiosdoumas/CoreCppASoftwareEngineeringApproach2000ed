@@ -556,3 +556,45 @@ int main()
 }
 // Build it as usual , while in the directory that contains the files :
 // g++ -Wall -o chap9example2 chap9example2.cpp
+
+//Example 9.3
+// the code in the book misses 2 headers , I also implemented with class instead of struct Name , that the book does.
+#include <iostream>
+#include <cstring>
+#include <cstdlib>		//for exit(1)
+using namespace std;
+class Name {
+	char *contents;			// public pointer to dynamic memory
+  public:
+	Name (const char* name);	// Constructor could be also implemented as : Name (const char name []); 
+	void show_name();
+	~Name();				// destructor eliminates memory leak
+} ;
+Name::Name(const char* name)		// conversion constructor
+{ 
+	int len = strlen(name);			// number of characters,without the final '\0'
+	contents = new char[len+1];		// allocate dynamic memory,accomodate for the extra '\0'
+	if (contents == NULL)			// if 'new' was not successful...
+	 { cout << "Out of memory\n"; exit(1); }		// ...give up
+	strcpy(contents, name);			// standard set of actions
+	cout << "object created: " << contents << endl;  // debugging message
+}
+void Name::show_name()
+ { cout <<contents << "\n"; }
+Name::~Name()				// destructor
+{ 
+	cout << "object destroyed: " << contents << endl;		// debugging message
+	delete contents; 		// deletes heap memory, not pointer 'contents'
+}
+void Client()
+{ 
+	Name n1("Jones");					// conversion constructor is called
+	Name *p = new Name("Smith");		// conversion constructor is called for unnamed object
+	n1.show_name(); p->show_name();
+	delete p;					// destructor for object pointed to by p is called ,so Smith is gone
+}							// p is deleted, destructor for object n1 is called (Jones is gone)
+int main()
+{ 
+	Client();
+	return 0;
+}
