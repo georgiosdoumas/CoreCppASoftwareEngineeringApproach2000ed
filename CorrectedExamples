@@ -588,11 +588,11 @@ Name::~Name()				// destructor
 }
 void Client()
 { 
-	Name n1("Jones");					// conversion constructor is called
+	Name n1("Jones");				// conversion constructor is called
 	Name *p = new Name("Smith");		// conversion constructor is called for unnamed object
 	n1.show_name(); p->show_name();
-	delete p;					// destructor for object pointed to by p is called ,so Smith is gone
-}							// p is deleted, destructor for object n1 is called (Jones is gone)
+	delete p;				// destructor for object pointed to by p is called ,so Smith is gone
+}						// p is deleted, destructor for object n1 is called (Jones is gone)
 int main()
 { 
 	Client();
@@ -639,3 +639,59 @@ int main()
 	delete p;			//this is not mentioned in example 9.5
 	return 0;		
 }		
+
+
+//Example 11.2 
+#include <iostream>
+#include <cstring> //book forgets it
+#include <cstdlib> //book forgets it
+using namespace std;
+class String 
+{
+	char *str;					// dynamically allocated char array
+	int len;
+  public:
+	String (int length=0);		//conversion/default constructor
+	String(const char*);		//conversion constructor
+	~String ();			//deallocate dynamic memory
+	void modify(const char*);	//change the array contents
+	char* show() const;		//returns a pointer to the array.Better would be: const char* show() const;
+} ;
+String::String(int length)
+{ 
+	len = length;
+	str = new char[len+1];		// default size is 1
+	if (str==NULL) exit(1);		// test for success
+	str[0] = '\0'; 			// empty String 
+} 
+String::String(const char* s)
+{ 
+	len = strlen(s);		 //measure length [not including final '\0'] of incoming text s
+	str = new char[len+1];	         //allocate enough heap space [to accomodate for closing '\0']...
+	if (str==NULL) exit(1);
+	strcpy(str,s); 			//... and copy text into new heap memory [strcpy includes the terminating '\0']
+} 
+String::~String()
+{ delete str; }     	// return heap memory (not the pointer!)
+void String::modify(const char a[])		// no memory management here
+{ 					//In the next 2 lines , the book has len-1 which is not correct.
+	strncpy(str,a,len);		// protect from overflow:copies from incoming a only as many chars as str can take
+	str[len] = '\0'; 		// terminate String properly with trailing 0
+} 
+char* String::show() const   //The improved version (to prevent client code abuse) would be: const char* String::show() const
+{ return str; } 	
+int main()
+{
+	String u("This is a test.");
+	String v("Nothing can go wrong.");
+	cout << " u = " << u.show() << endl;		//result is OK 
+	cout << " v = " << v.show() << endl;		//result is OK
+	v.modify("Let us hope for the best.");		//input is truncated if necessary
+	cout << " v = " << v.show() << endl;
+	//strcpy(u.show(),"This is a very long string!");	//client code abuse: Compiles,but :Run time errors
+	//cout << " u = " << u.show() << endl;
+	strncpy(u.show(),"Hi there,that is very long",strlen(u.show())); //still bad practice,should use only modify()
+        //With the improoved header for show(), the above inappropriate use show() would be flaged as error by the compiler
+	cout << " u = " << u.show() << endl;
+	return 0;
+}
