@@ -672,7 +672,7 @@ String::String(const char* s)
 	strcpy(str,s); 			//... and copy text into new heap memory [strcpy includes the terminating '\0']
 } 
 String::~String()
-{ delete str; }     	// return heap memory (not the pointer!)
+{ delete [] str; }     	// return heap memory. The book has it as : delete str;
 void String::modify(const char a[])		// no memory management here
 { 					//In the next 2 lines , the book has len-1 which is not correct.
 	strncpy(str,a,len);		// protect from overflow:copies from incoming a only as many chars as str can take
