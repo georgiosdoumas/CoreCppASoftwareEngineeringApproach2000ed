@@ -695,3 +695,11 @@ int main()
 	cout << " u = " << u.show() << endl;
 	return 0;
 }
+
+Correction in the text of chapter 11.
+After Figure 11.9 , the text says :
+"Figure 11-9, which shows the whole truth, includes a local object s whose data members are initialized to the values of the
+actual argument v. Figure 11-9(a) shows that this local object v and the actual argument u share the same section of the heap
+memory."
+It is easy to realize that the 2nd sentence was meant to say :
+"Figure 11-9(a) shows that this local object s and the actual argument v share the same section of the heap memory."
