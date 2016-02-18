@@ -703,3 +703,118 @@ actual argument v. Figure 11-9(a) shows that this local object v and the actual 
 memory."
 It is easy to realize that the 2nd sentence was meant to say :
 "Figure 11-9(a) shows that this local object s and the actual argument v share the same section of the heap memory."
+
+
+//Example 11.7 , with First Remedy and Second Remedy.
+//Also some additional code of mine , to use the modify() call.
+#include <iostream>
+#include <cstring> //book forgets it
+#include <cstdlib> //book forgets it
+using namespace std;
+class String 
+{
+	char *str;
+	int len;
+	char* allocate(const char* s)
+	 { 
+		char * p = new char[strlen(s) + 1 ];
+		if (p==NULL) exit(1);
+		strcpy(p,s);
+		return p; 
+	 }
+  public:
+	String (int length=0);		//conversion+default constructor
+	String(const char*);		//conversion constructor char[]->String
+	String(const String& s);	//copy constructor String to String
+	~String ();
+	void operator += (const String&);
+	const String& operator = (const String&);	//assignement operator String1 = String2
+	const String& operator = (const char []);   //assignement  for chars
+	void modify(const char*);
+	bool operator == (const String&) const;
+	const char* show() const;
+} ;
+String::String(int length)
+ { len = length; str = allocate(""); }
+String::String(const char* s)
+{ 
+	len = strlen(s);
+	str = allocate(s);
+	cout << " Created: '" << str <<"'\n"; 
+}
+String::String(const String& w)
+{ 
+	len = w.len;
+	str = allocate(w.str);
+	cout << " Copied: '" << str <<"'\n"; 
+}
+String::~String()
+{ delete str; }
+void String::operator += (const String& w)
+{ 
+	len = strlen(str) + strlen(w.str);
+	char* p = new char[len + 1];
+	if (p==NULL) exit(1);
+	strcpy(p,str);
+	strcat(p,w.str);
+	delete str;
+	str = p; 
+}
+const String& String::operator = (const String& w)
+{ 
+	if (&w == this) return *this;		// test for self-assignment String1=String1 
+	delete str;						//you don't do it in copy constructor
+	len = w.len;					// copy non-pointer data
+	str = allocate(w.str);			// allocate space, copy incoming text
+	cout << " Assigned: '" << str <<"'\n";		// debugging purpose message
+	return *this; 					// return the target object to client
+}
+const String& String::operator = (const char s[])
+{
+	delete str;
+	len=strlen(s);
+	str=allocate(s);
+	cout << "Asigned (from char arr): ' " << str << " '\n";
+	return *this; 
+}
+bool String::operator==(const String& w) const
+{ return strcmp(str,w.str)==0; }
+const char* String::show() const
+{ return str; }   		
+void String::modify(const char s[])
+{ 
+	strncpy(str,s,len);				// protect from overflow
+	str[len] = '\0';  				// terminate String properly
+}
+String enterData()
+{ 
+	cout << " Enter city to find: ";   
+	char data[200];
+	cin >> data;
+	return String(data); 			//conversion constructor is called
+} 
+int main()
+{ 
+	cout << endl << endl;
+	enum { MAX = 4} ;
+	String data[MAX];					// database of objects
+	const char *c[MAX] = { "Atlanta", "Boston", "Chicago", "Denver" };
+	for (int j=0; j<MAX; j++)
+	 { data[j] = c[j]; }				// assignment:data[j].operator=(c[j]);
+	String u  ; int i; 
+	char newcity[100] ;					// char * newcity ;  gives a run-time segmentation fault
+	u = enterData();				// it needs assignment and not copy constructor
+	for (i=0; i<MAX; i++)
+	 { if (data[i] == u) break; }		//meaning: if (data[i].operator==(u))
+	if (i == MAX)
+		cout << " City " << u.show() << " is not found\n";
+	else
+	  {
+		cout << " City " << u.show() << " is found\n";
+		cout << " Enter the modified name of that city : " ;
+		cin >> newcity ;
+		u.modify(newcity);
+		cout << "New name : " << u.show() << endl;   //truncated if user gives name longer than initial name of city
+	  }
+	return 0;
+}
