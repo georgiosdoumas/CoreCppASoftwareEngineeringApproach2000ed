@@ -818,3 +818,48 @@ int main()
 	  }
 	return 0;
 }
+
+
+//Example 11.8 full
+#include <iostream>
+#include <cstring> 
+#include <cstdlib> 
+using namespace std;
+class Window 
+{
+	char *str;
+	int len;
+	Window(const Window& );       //this and next functions only to provide syntax errors
+	Window& operator = (const Window &);  // and protect abuse in the client code
+  public:
+	Window()
+	 { len = 0; str = new char[len]; str[0]= 0 ; }
+	~Window()
+	 { delete str; }
+	void operator += (const char s[])
+	 { 
+		len = strlen(str) + strlen(s);
+		char* p = new char[len + 1];
+		if (p==NULL) exit(1);
+		strcpy(p,str); strcat(p,s);
+		delete str; 
+		str = p; 
+	 }
+	const char* show() const  //allowed display function
+	 { return str; } 
+} ;
+
+void display(const Window  wind)	//do not pass objects by value,using this gives compile errors
+ { cout << wind.show(); }
+
+int main()
+{ 
+	Window w1; 
+	w1 += "Welcome, Dear Customer!\n";       // reasonable and accepted usage
+	//Window w2 = w1;			// unreasonable usage:gives syntax error
+	///Window w2; 
+	///w2 = w1;			//even less reasonable usage: gives syntax error
+	////display(w1);			// pass by value gives syntax error
+	cout << w1.show() << endl;       //correct way to display
+	return 0;
+}
